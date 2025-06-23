@@ -1,9 +1,9 @@
-package com.groupies.groupies.user.dto;
+package com.groupies.groupies.user.payload.request;
 
 import lombok.Getter;
 
 @Getter
-public class UserSignUpDto {
+public class SignUpRequest {
     private String email;
     private String password;
 }

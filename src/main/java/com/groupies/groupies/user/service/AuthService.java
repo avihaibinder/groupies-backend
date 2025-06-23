@@ -1,8 +1,8 @@
 package com.groupies.groupies.user.service;
 
-import com.groupies.groupies.user.dto.UserLoginDto;
-import com.groupies.groupies.user.dto.UserSignUpDto;
-import com.groupies.groupies.user.dto.UserVerificationDto;
+import com.groupies.groupies.user.payload.request.LoginRequest;
+import com.groupies.groupies.user.payload.request.SignUpRequest;
+import com.groupies.groupies.user.payload.request.UserVerificationRequest;
 import com.groupies.groupies.user.model.User;
 import com.groupies.groupies.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
@@ -29,13 +29,13 @@ public class AuthService {
         this.emailService = emailService;
     }
 
-    public User signup(UserSignUpDto input) {
+    public User signup(SignUpRequest input) {
         User user = new User(input.getEmail(), passwordEncoder.encode(input.getPassword()), generateVerificationCode(), LocalDateTime.now().plusMinutes(15), false);
         sendVerificationEmail(user);
         return userRepository.save(user);
     }
 
-    public User authenticate(UserLoginDto input) {
+    public User authenticate(LoginRequest input) {
         User user = userRepository.findByEmail(input.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -46,7 +46,7 @@ public class AuthService {
         return user;
     }
 
-    public void verifyUser(UserVerificationDto input) {
+    public void verifyUser(UserVerificationRequest input) {
         Optional<User> optionalUser = userRepository.findByEmail(input.getEmail());
         if (optionalUser.isEmpty()) {
             throw new RuntimeException("User not found");
